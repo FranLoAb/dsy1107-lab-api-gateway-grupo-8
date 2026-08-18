@@ -1,9 +1,10 @@
 # Evidencias · Laboratorio API Gateway
 
 ## Integrantes
-- Nombre:
-- Nombre:
-- Nombre:
+- Nombre: Francisca Guerrero (Rana)
+- Nombre: Nicolás Pérez (sicseven)
+- Nombre: Benjamin Aravena (yaelbenja)
+- Nombre: Francisca López (gei)
 
 ## 1. Backend directo
 
@@ -18,6 +19,25 @@ Antes de utilizar el gateway, registrar las pruebas directas contra JSONPlacehol
 
 Respuesta:
 
+Primer Link:  El usuario conoce la información de los usuarios {
+        "userId": 1,
+        "id": 1,
+        "title": "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",
+        "body": "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto"
+    },
+    {
+        "userId": 1,
+        "id": 2,
+        "title": "qui est esse",
+        "body": "est rerum tempore vitae\nsequi sint nihil reprehenderit dolor beatae ea dolores neque\nfugiat blanditiis voluptate porro vel nihil molestiae ut reiciendis\nqui aperiam non debitis possimus qui neque nisi nulla"
+    } 
+
+Segundo Link: El usuario conoce la información del usuario con id 1 {
+    "userId": 1,
+    "id": 1,
+    "title": "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",
+    "body": "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto"
+}
 ---
 
 ## 2. Arquitectura final
@@ -45,7 +65,7 @@ Spring cloud gateway: Es la puerta de entrada principal (API Gateway). Recibe to
 
 Postman: Herramienta que simula hacer peticiones web desde la perspectiva de un cliente sin necesidad de siseñar o abrir una pagina web
 
-JsonPlaceHolder: Simula ser el servidor de backend 
+JsonPlaceHolder: Simula ser el servidor de backend o bd y proporciona datos falsos en formato json para que los programadores puedan experimenta hacer pruebas.
 
 ---
 
@@ -53,14 +73,13 @@ JsonPlaceHolder: Simula ser el servidor de backend
 
 | Método | URL | Status | Headers relevantes | Interpretación |
 |---|---|---:|---|---|
-| GET | `/api/v1/posts` | | | colección |
+| GET | `/api/v1/posts` | | | colección | Muestra o entrega toda la i la información
 | GET | `/api/v1/posts/1` | | | recurso individual |
 | POST | `/api/v1/posts` | | | creación simulada |
 | PUT | `/api/v1/posts/1` | | | actualización simulada |
 | DELETE | `/api/v1/posts/1` | | | eliminación simulada |
 
 Para POST y PUT incluir también el body enviado.
-
 ---
 
 ## 4. Routing
