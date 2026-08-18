@@ -39,6 +39,14 @@ flowchart LR
 
 Explicar brevemente qué responsabilidad cumple cada componente.
 
+Cliente web: Es la interfaz gráfica o página web que ve el usuario en su navegador. Este cliente genera peticiones para pedir o enviar datos. 
+
+Spring cloud gateway: Es la puerta de entrada principal (API Gateway). Recibe todas las peticiones (ya vengan de la Web o de Postman), verifica la seguridad o reglas necesarias y redirige el tráfico hacia el destino correcto. Evita que los clientes se conecten directamente a los servicios internos.
+
+Postman: Herramienta que simula hacer peticiones web desde la perspectiva de un cliente sin necesidad de siseñar o abrir una pagina web
+
+JsonPlaceHolder: Simula ser el servidor de backend 
+
 ---
 
 ## 3. Pruebas HTTP mediante gateway
