@@ -73,13 +73,26 @@ JsonPlaceHolder: Simula ser el servidor de backend o bd y proporciona datos fals
 
 | Método | URL | Status | Headers relevantes | Interpretación |
 |---|---|---:|---|---|
-| GET | `/api/v1/posts` | | | colección | Muestra o entrega toda la i la información
-| GET | `/api/v1/posts/1` | | | recurso individual |
-| POST | `/api/v1/posts` | | | creación simulada |
-| PUT | `/api/v1/posts/1` | | | actualización simulada |
-| DELETE | `/api/v1/posts/1` | | | eliminación simulada |
+| GET | `/api/v1/posts` | | | colección | Muestra o entrega toda la información sin filtro
+| GET | `/api/v1/posts/1` | | | recurso individual | Muestra la información filtrada por id 1
+| POST | `/api/v1/posts` | | | creación simulada | Crea otro usuario con id autoincremental (101) 
+| PUT | `/api/v1/posts/1` | | | actualización simulada | Modifica o actualiza al usuario id 1
+| DELETE | `/api/v1/posts/1` | | | eliminación simulada | Elimina al usuario con id 1
 
 Para POST y PUT incluir también el body enviado.
+
+POST: {
+    "apiId": "v1",
+    "id": 101
+}
+
+PUT (Actulizamos usuario id de 1 a 90):
+{
+  "userId": 90,
+  "id": 1,
+  "title": "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",
+  "body": "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto"
+}
 ---
 
 ## 4. Routing
