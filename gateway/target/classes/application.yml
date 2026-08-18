@@ -8,6 +8,17 @@ spring:
     gateway:
       server:
         webmvc:
+          globalcors:
+            corsConfigurations:
+              '[/**]':
+                allowedOrigins: "http://localhost:5500"
+                allowedMethods:
+                  - GET
+                  - POST
+                  - PUT
+                  - DELETE
+                  - OPTIONS
+                allowedHeaders: "*"
           routes:
             - id: posts-v1
               uri: https://jsonplaceholder.typicode.com
@@ -18,5 +29,5 @@ spring:
 
 lab:
   cors:
-    enabled: false
+    enabled: true
     allowed-origin: http://localhost:5500
