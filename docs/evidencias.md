@@ -97,12 +97,12 @@ PUT (Actulizamos usuario id de 1 a 90):
 
 ## 4. Routing
 
-- URL solicitada por el cliente:
-- `id` de la route:
-- predicate que hizo match:
-- URI/integration configurada:
-- path recibido finalmente por el backend:
-- función de `RewritePath`:
+- URL solicitada por el cliente:  http://localhost:8080/api/v1/posts/1
+- `id` de la route: posts-v1
+- predicate que hizo match: Path=/api/v1/posts/**
+- URI/integration configurada: https://jsonplaceholder.typicode.com
+- path recibido finalmente por el backend: /posts/1
+- función de `RewritePath`: Elimina el prefijo /api/v1 de la solicitud original para reescribir la URI a la ruta esperada por el backend destino (/posts/1).
 
 ### Recorrido de una petición
 
@@ -111,6 +111,8 @@ Explicar con sus palabras:
 ```text
 cliente → gateway → backend → gateway → cliente
 ```
+
+Explicación: El cleinte envía la solicitud URL hacia la API Gateway, la cual evalúa los criterios y envía a a ruta coincidente (en este caso posts-v1) mediante predicate. Luego, el filtro remueve el prefijo /api/v1 dejando solo /posts/v1, y redirige la petición a la URI de integración configurada, consultando finalmente https://jsonplaceholder.typicode.com/posts/1 en el backend para luego volver al cliente.
 
 ---
 
