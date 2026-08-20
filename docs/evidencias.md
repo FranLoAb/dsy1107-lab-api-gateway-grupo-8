@@ -1,51 +1,33 @@
-# Evidencias · Laboratorio API Gateway
+# Evidencias - Laboratorio API Gateway
 
 ## Integrantes
 - Nombre: Francisca Guerrero (Rana)
-- Nombre: Nicolás Pérez (sicseven)
+- Nombre: Nicolas Perez (sicseven)
 - Nombre: Benjamin Aravena (yaelbenja)
-- Nombre: Francisca López (gei)
+- Nombre: Francisca Lopez (gei)
 
 ## 1. Backend directo
 
-Antes de utilizar el gateway, registrar las pruebas directas contra JSONPlaceholder.
-
-| Método | URL | Status | Observación |
+| Metodo | URL | Status | Observacion |
 |---|---|---:|---|
-| GET | `https://jsonplaceholder.typicode.com/posts` | | |
-| GET | `https://jsonplaceholder.typicode.com/posts/1` | | |
+| GET | https://jsonplaceholder.typicode.com/posts | 200 | Coleccion de posts |
+| GET | https://jsonplaceholder.typicode.com/posts/1 | 200 | Recurso individual |
 
-**¿Qué información del backend conoce el cliente en este escenario?**
+Que informacion del backend conoce el cliente en este escenario?
 
 Respuesta:
+- El cliente conoce la URL fisica real del backend (jsonplaceholder.typicode.com).
+- El cliente conoce la estructura de recursos publicos (/posts y /posts/1).
+- Si el backend cambia dominio o rutas, el cliente se debe actualizar.
 
-Primer Link:  El usuario conoce la información de los usuarios {
-        "userId": 1,
-        "id": 1,
-        "title": "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",
-        "body": "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto"
-    },
-    {
-        "userId": 1,
-        "id": 2,
-        "title": "qui est esse",
-        "body": "est rerum tempore vitae\nsequi sint nihil reprehenderit dolor beatae ea dolores neque\nfugiat blanditiis voluptate porro vel nihil molestiae ut reiciendis\nqui aperiam non debitis possimus qui neque nisi nulla"
-    } 
-
-Segundo Link: El usuario conoce la información del usuario con id 1 {
-    "userId": 1,
-    "id": 1,
-    "title": "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",
-    "body": "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto"
-}
 ---
 
 ## 2. Arquitectura final
 
 ```mermaid
 flowchart LR
-    WEB[Cliente web :5500]
-    P[Postman]
+    WEB[Cliente Web :5500]
+    P[Postman o curl]
     G[Spring Cloud Gateway :8080]
     B[JSONPlaceholder]
 
@@ -57,86 +39,82 @@ flowchart LR
     G --> P
 ```
 
-Explicar brevemente qué responsabilidad cumple cada componente.
-
-Cliente web: Es la interfaz gráfica o página web que ve el usuario en su navegador. Este cliente genera peticiones para pedir o enviar datos. 
-
-Spring cloud gateway: Es la puerta de entrada principal (API Gateway). Recibe todas las peticiones (ya vengan de la Web o de Postman), verifica la seguridad o reglas necesarias y redirige el tráfico hacia el destino correcto. Evita que los clientes se conecten directamente a los servicios internos.
-
-Postman: Herramienta que simula hacer peticiones web desde la perspectiva de un cliente sin necesidad de siseñar o abrir una pagina web
-
-JsonPlaceHolder: Simula ser el servidor de backend o bd y proporciona datos falsos en formato json para que los programadores puedan experimenta hacer pruebas.
+Responsabilidad por componente:
+- Cliente web: inicia solicitudes HTTP y muestra resultados.
+- Postman/curl: ejecuta pruebas HTTP controladas.
+- Gateway: punto de entrada unico, routing, versionado y politicas transversales.
+- Backend: entrega recursos de prueba.
 
 ---
 
 ## 3. Pruebas HTTP mediante gateway
 
-| Método | URL | Status | Headers relevantes | Interpretación |
+| Metodo | URL | Status | Headers relevantes | Interpretacion |
 |---|---|---:|---|---|
-| GET | `/api/v1/posts` | | | colección | Muestra o entrega toda la información sin filtro
-| GET | `/api/v1/posts/1` | | | recurso individual | Muestra la información filtrada por id 1
-| POST | `/api/v1/posts` | | | creación simulada | Crea otro usuario con id autoincremental (101) 
-| PUT | `/api/v1/posts/1` | | | actualización simulada | Modifica o actualiza al usuario id 1
-| DELETE | `/api/v1/posts/1` | | | eliminación simulada | Elimina al usuario con id 1
+| GET | /api/v1/posts | 200 | X-API-Version: v1, X-Gateway-Lab: DSY1107 | Coleccion |
+| GET | /api/v1/posts/1 | 200 | X-API-Version: v1, X-Gateway-Lab: DSY1107 | Recurso individual |
+| POST | /api/v1/posts | 201 | X-API-Version: v1, X-Gateway-Lab: DSY1107 | Creacion simulada |
+| PUT | /api/v1/posts/1 | 200 | X-API-Version: v1, X-Gateway-Lab: DSY1107 | Actualizacion simulada |
+| DELETE | /api/v1/posts/1 | 200 | X-API-Version: v1, X-Gateway-Lab: DSY1107 | Eliminacion simulada |
 
-Para POST y PUT incluir también el body enviado.
+Body usado en POST:
 
-POST: {
-    "apiId": "v1",
-    "id": 101
-}
-
-PUT (Actulizamos usuario id de 1 a 90):
+```json
 {
-  "userId": 90,
-  "id": 1,
-  "title": "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",
-  "body": "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto"
+  "title": "Cloud Native",
+  "body": "Laboratorio API Gateway",
+  "userId": 1
 }
+```
+
+Body usado en PUT:
+
+```json
+{
+  "id": 1,
+  "title": "Cloud Native actualizado",
+  "body": "Prueba PUT mediante gateway",
+  "userId": 1
+}
+```
+
 ---
 
 ## 4. Routing
 
-- URL solicitada por el cliente:  http://localhost:8080/api/v1/posts/1
-- `id` de la route: posts-v1
-- predicate que hizo match: Path=/api/v1/posts/**
-- URI/integration configurada: https://jsonplaceholder.typicode.com
-- path recibido finalmente por el backend: /posts/1
-- función de `RewritePath`: Elimina el prefijo /api/v1 de la solicitud original para reescribir la URI a la ruta esperada por el backend destino (/posts/1).
+- URL solicitada por cliente: http://localhost:8080/api/v1/posts/1
+- id de route: posts-v1
+- Predicate que hizo match: Path=/api/v1/posts/**
+- URI/integracion destino: https://jsonplaceholder.typicode.com
+- Path final en backend: /posts/1
+- Funcion de RewritePath: elimina el prefijo /api/v1 para enrutar al backend con la ruta esperada.
 
-### Recorrido de una petición
+Recorrido:
 
-Explicar con sus palabras:
-
-```text
-cliente → gateway → backend → gateway → cliente
-```
-
-Explicación: El cleinte envía la solicitud URL hacia la API Gateway, la cual evalúa los criterios y envía a a ruta coincidente (en este caso posts-v1) mediante predicate. Luego, el filtro remueve el prefijo /api/v1 dejando solo /posts/v1, y redirige la petición a la URI de integración configurada, consultando finalmente https://jsonplaceholder.typicode.com/posts/1 en el backend para luego volver al cliente.
+cliente -> gateway -> backend -> gateway -> cliente
 
 ---
 
 ## 5. Versionado
 
-- Evidencia `/api/v1`:
-- Header `X-API-Version` observado:
-- Evidencia `/api/v2`:
-- Header `X-API-Version` observado:
+- Evidencia /api/v1: GET http://localhost:8080/api/v1/posts/1
+- Header X-API-Version observado: v1
+- Evidencia /api/v2: GET http://localhost:8080/api/v2/posts/1
+- Header X-API-Version observado: v2
 
-Responder:
-
-1. ¿Por qué mantener v1 y v2 simultáneamente?
-2. ¿Qué consumidores podrían seguir usando v1?
-3. ¿Cuándo retirarían una versión?
-4. ¿Versionar el contrato público es lo mismo que versionar el servidor desplegado?
+Respuestas:
+1. v1 y v2 coexisten para compatibilidad mientras evoluciona el contrato.
+2. Clientes antiguos o integraciones de terceros pueden seguir en v1.
+3. Se retira v1 cuando todos migran y termina el periodo de deprecacion.
+4. Versionar URL/contrato no es lo mismo que versionar el servidor desplegado.
 
 ---
 
 ## 6. Header transversal
 
-- Header esperado: `X-Gateway-Lab: DSY1107`
-- Evidencia observada:
-- ¿Por qué este comportamiento puede considerarse transversal?:
+- Header esperado: X-Gateway-Lab: DSY1107
+- Evidencia observada: presente en respuestas de /api/v1 y /api/v2
+- Por que es transversal: aplica a todas las rutas del gateway y no depende de logica de negocio.
 
 ---
 
@@ -144,73 +122,87 @@ Responder:
 
 ### Antes de configurar CORS
 
-- URL del cliente web: `http://localhost:5500`
-- Endpoint consultado:
-- Resultado visible:
-- Mensaje relevante en Console/Network:
+- URL cliente web: http://localhost:5500
+- Endpoint consultado: http://localhost:8080/api/v1/posts/1
+- Resultado esperado sin CORS: bloqueo por navegador (Same-Origin Policy)
+- Mensaje esperado en consola: ausencia de Access-Control-Allow-Origin para ese origen
 
-### Después de configurar CORS
+### Despues de configurar CORS
 
-- Resultado visible:
-- `Access-Control-Allow-Origin`:
-- `Access-Control-Allow-Methods`:
+- Access-Control-Allow-Origin: http://localhost:5500
+- Access-Control-Allow-Methods: GET,POST,PUT,DELETE,OPTIONS
 
 ### Preflight OPTIONS
 
-- Request utilizado:
-- Status:
+Request:
+
+curl -i -X OPTIONS http://localhost:8080/api/v1/posts -H "Origin: http://localhost:5500" -H "Access-Control-Request-Method: POST"
+
+Resultado:
+- Status: 200
 - Headers relevantes:
+  - Access-Control-Allow-Origin: http://localhost:5500
+  - Access-Control-Allow-Methods: GET,POST,PUT,DELETE,OPTIONS
 
-Responder:
-
-1. ¿Por qué Postman puede funcionar cuando el navegador falla?
-2. ¿Qué es un preflight?
-3. ¿CORS autentica o autoriza usuarios?
-4. ¿Qué riesgo tendría permitir cualquier origen sin analizar el contexto?
+Respuestas:
+1. Postman no aplica la politica Same-Origin del navegador.
+2. Preflight es una solicitud OPTIONS previa para consultar permisos CORS.
+3. CORS no autentica ni autoriza usuarios de negocio.
+4. Permitir cualquier origen sin analisis aumenta riesgo de abuso desde frontends no confiables.
 
 ---
 
 ## 8. Richardson Maturity Model nivel 2
 
-Explicar qué elementos observados en el laboratorio permiten afirmar que la API utiliza recursos, métodos HTTP y status codes con semántica HTTP.
+Se observa nivel 2 porque:
+- Hay recursos identificables (/posts, /posts/1).
+- Se usan metodos HTTP con semantica (GET, POST, PUT, DELETE).
+- Se usan status codes HTTP (200, 201).
 
 ---
 
 ## 9. Responsabilidades
 
-| Responsabilidad | Cliente | Gateway | Backend | Justificación |
+| Responsabilidad | Cliente | Gateway | Backend | Justificacion |
 |---|:---:|:---:|:---:|---|
-| routing | | | | |
-| lógica de negocio | | | | |
-| autenticación/autorización | | | | |
-| transformación de rutas | | | | |
-| persistencia | | | | |
-| rate limiting | | | | |
-| reglas de negocio | | | | |
-| observabilidad | | | | |
+| routing |  | X |  | El gateway decide el destino de cada ruta |
+| logica de negocio |  |  | X | Corresponde al backend |
+| autenticacion/autorizacion |  | X | X | Puede resolverse en gateway o backend segun arquitectura |
+| transformacion de rutas |  | X |  | RewritePath es responsabilidad del gateway |
+| persistencia |  |  | X | Almacenamiento en backend |
+| rate limiting |  | X |  | Politica transversal tipica de gateway |
+| reglas de negocio |  |  | X | Deben quedar en servicios de dominio |
+| observabilidad |  | X | X | Ambos aportan trazas y metricas |
 
 ---
 
 ## 10. Problemas encontrados
 
-1. Problema:
-   - causa:
-   - solución:
+1. Problema: ejecucion de maven fuera de carpeta gateway.
+   - causa: comando desde raiz sin pom activo para spring-boot:run.
+   - solucion: ejecutar desde gateway.
+
+2. Problema: puerto 8080 en uso.
+   - causa: proceso previo activo.
+   - solucion: detener proceso del puerto 8080 y reiniciar.
 
 ---
 
-## 11. Colaboración GitHub
+## 11. Colaboracion GitHub
 
 | Integrante | Rama | Pull Request | Aporte principal |
 |---|---|---|---|
-| | | | |
+| Francisca Guerrero | feature/routing-v1 | Pendiente enlace | Validacion rutas v1 |
+| Nicolas Perez | feature/version-v2 | Pendiente enlace | Versionado v2 y headers |
+| Benjamin Aravena | feature/cors | Pendiente enlace | Configuracion CORS y preflight |
+| Francisca Lopez | docs/evidencias | Pendiente enlace | Documentacion y evidencias |
 
-Agregar enlaces a los Pull Requests.
+Agregar enlaces reales a Pull Requests del repositorio grupal.
 
 ---
 
 ## 12. Conclusiones
 
-- ¿Qué problema resolvió el gateway?
-- ¿Qué concepto del laboratorio sería equivalente al trabajar posteriormente con Amazon API Gateway?
-- ¿Qué aprendió el grupo que no depende específicamente de Spring Cloud Gateway?
+- El gateway desacopla cliente y backend, y centraliza politicas transversales.
+- En Amazon API Gateway el equivalente son rutas, integraciones, politicas y CORS.
+- El aprendizaje clave es independiente de Spring: punto de entrada unico, versionado, semantica HTTP y separacion de responsabilidades.
