@@ -7,6 +7,20 @@ spring:
   cloud:
     gateway:
       server:
+        webflux:
+          default-filters:
+            - AddResponseHeader=X-Gateway-Lab, DSY1107
+          globalcors:
+            corsConfigurations:
+              '[/**]':
+                allowedOrigins: "http://localhost:5500"
+                allowedMethods:
+                  - GET
+                  - POST
+                  - PUT
+                  - DELETE
+                  - OPTIONS
+                allowedHeaders: "*"
         webmvc:
           globalcors:
             corsConfigurations:
@@ -26,6 +40,16 @@ spring:
                 - Path=/api/v1/posts/**
               filters:
                 - RewritePath=/api/v1/(?<segment>.*), /$\{segment}
+                - AddResponseHeader=X-API-Version, v1
+                - AddResponseHeader=X-Gateway-Lab, DSY1107
+            - id: posts-v2
+              uri: https://jsonplaceholder.typicode.com
+              predicates:
+                - Path=/api/v2/posts/**
+              filters:
+                - RewritePath=/api/v2/(?<segment>.*), /$\{segment}
+                - AddResponseHeader=X-API-Version, v2
+                - AddResponseHeader=X-Gateway-Lab, DSY1107
 
 lab:
   cors:
